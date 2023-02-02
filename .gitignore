@@ -1,0 +1,11 @@
+.idea
+venv
+*.npz
+*.pyc
+*.json
+
+models/*
+
+# for now
+trash
+src

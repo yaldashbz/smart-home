@@ -1,0 +1,9 @@
+numpy~=1.24.1
+opencv-python~=4.7.0.68
+comtypes~=1.1.14
+pycaw~=20220416
+mediapipe~=0.9.1.0
+gTTS~=2.3.1
+keyboard~=0.13.5
+tensorflow~=2.11.0
+keras~=2.11.0
