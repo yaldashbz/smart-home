@@ -9,4 +9,4 @@ models/*
 # for now
 trash
 
-src/controller/test_finger_count_controll*
+src/controller/*test.py
