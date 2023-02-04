@@ -9,4 +9,4 @@ models/*
 # for now
 trash
 
-src/controller/test*
+src/controller/test_finger_count_controll*
