@@ -8,3 +8,5 @@ models/*
 
 # for now
 trash
+
+src/controller/test*
