@@ -55,6 +55,10 @@ class FingerCountController(BaseController):
 
         if up == 5:
             print("Open the door")
+            return 1
 
-        if up == 1:
+        if up == 1 or up == 0:
             print("close the door")
+            return 0
+
+        return 2

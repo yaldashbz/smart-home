@@ -1,9 +1,6 @@
-from collections import Counter
-
 import cv2
 
-from finger_count_controller import FingerCountController
-from utils import find_position, find_landmark
+from src.connection.finger_count_controller import FingerCountController
 
 cap = cv2.VideoCapture(0)
 tip = [8, 12, 16, 20]

@@ -7,6 +7,10 @@ from datetime import datetime
 import cv2
 import numpy
 
+from finger_count_controller import FingerCountController
+
+controller = FingerCountController()
+
 
 class ServerSocket:
     def __init__(self, ip, port):
@@ -31,7 +35,6 @@ class ServerSocket:
 
     def receiveImages(self):
         try:
-            i = 0
             while True:
                 length = self.recvall(self.conn, 64)
                 length1 = length.decode('utf-8')
@@ -42,11 +45,13 @@ class ServerSocket:
                 print('receive time: ' + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f'))
                 data = numpy.frombuffer(base64.b64decode(stringData), numpy.uint8)
                 decimg = cv2.imdecode(data, 1)
-                cv2.imshow("image", decimg)
-                if i == 0:
-                    cv2.imwrite("testt.png", decimg)
+                res = controller.process(decimg)
+                print("reeeeeeeeeeeeeeeeeeees is ", res)
+                # res_data = base64.b64encode(str(res).encode())
+                self.conn.send(str(res).encode())
+                # self.sock.send(res_data)
+                # cv2.imshow("image", decimg)
                 cv2.waitKey(1)
-                i+=1
         except Exception as e:
             print(e)
             self.socketClose()
@@ -66,7 +71,8 @@ class ServerSocket:
 
 
 def main():
-    server = ServerSocket('localhost', 8081)
+    IP = '192.168.181.104'
+    server = ServerSocket('', 12397)
 
 
 if __name__ == "__main__":

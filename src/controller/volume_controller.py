@@ -7,7 +7,7 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 import hand_tracker as htm
-from base import BaseController
+from src.connection.base import BaseController
 
 wCam, hCam = 640, 480
 

@@ -23,7 +23,7 @@ class ClientSocket:
                 u'Client socket is connected with Server socket [ TCP_SERVER_IP: ' + self.TCP_SERVER_IP + ', TCP_SERVER_PORT: ' + str(
                     self.TCP_SERVER_PORT) + ' ]')
             self.connectCount = 0
-            self.sendImages()
+            # self.sendImages()
         except Exception as e:
             print(e)
             self.connectCount += 1
@@ -33,37 +33,46 @@ class ClientSocket:
             print(u'%d times try to connect with server' % (self.connectCount))
             self.connectServer()
 
-    def sendImages(self):
+    def sendImages(self, frame):
         cnt = 0
-        capture = cv2.VideoCapture(0)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 315)
+        # capture = cv2.VideoCapture(0)
+        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 315)
         try:
-            while capture.isOpened():
-                ret, frame = capture.read()
-                resize_frame = cv2.resize(frame, dsize=(480, 315), interpolation=cv2.INTER_AREA)
+            # while capture.isOpened():
+            #     ret, frame = capture.read()
+            resize_frame = cv2.resize(frame, dsize=(480, 315), interpolation=cv2.INTER_AREA)
 
-                now = time.localtime()
-                stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
+            now = time.localtime()
+            stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
-                encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-                result, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
-                data = numpy.array(imgencode)
-                stringData = base64.b64encode(data)
-                length = str(len(stringData))
-                self.sock.sendall(length.encode('utf-8').ljust(64))
-                self.sock.send(stringData)
-                self.sock.send(stime.encode('utf-8').ljust(64))
-                print(u'send images %d' % (cnt))
-                cnt += 1
-                # time.sleep(0.095)
-                time.sleep(1)
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+            result, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
+            data = numpy.array(imgencode)
+            stringData = base64.b64encode(data)
+            length = str(len(stringData))
+            self.sock.sendall(length.encode('utf-8').ljust(64))
+            self.sock.send(stringData)
+            self.sock.send(stime.encode('utf-8').ljust(64))
+            print(u'send images %d' % (cnt))
+            cnt += 1
+            # time.sleep(0.095)
+            time.sleep(1)
         except Exception as e:
             print(e)
             self.sock.close()
             time.sleep(1)
             self.connectServer()
-            self.sendImages()
+            self.sendImages(frame)
+
+    def recvall(self, sock, count):
+        buf = b''
+        while count:
+            newbuf = sock.recv(count)
+            if not newbuf: return None
+            buf += newbuf
+            count -= len(newbuf)
+        return buf
 
 
 def main():
