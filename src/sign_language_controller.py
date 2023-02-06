@@ -25,9 +25,11 @@ class SignLanguageController:
         mphands = mp.solutions.hands
         self.hands = mphands.Hands()
         self.mp_drawing = mp.solutions.drawing_utils
-        self.letterpred = list(string.ascii_uppercase)
+        self.letterpred = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+              'W', 'X', 'Y']
 
     def process(self, img):
+        high_key = 'A'
         h, w, c = img.shape
         analysisframe = img
         showframe = analysisframe
@@ -56,71 +58,46 @@ class SignLanguageController:
                 x_min -= 20
                 x_max += 20
 
-        analysisframe = cv2.cvtColor(analysisframe, cv2.COLOR_BGR2GRAY)
-        analysisframe = analysisframe[y_min:y_max, x_min:x_max]
-        analysisframe = cv2.resize(analysisframe, (28, 28))
+            analysisframe = cv2.cvtColor(analysisframe, cv2.COLOR_BGR2GRAY)
+            analysisframe = analysisframe[y_min:y_max, x_min:x_max]
+            analysisframe = cv2.resize(analysisframe, (28, 28))
 
-        nlist = []
-        rows, cols = analysisframe.shape
-        for i in range(rows):
-            for j in range(cols):
-                k = analysisframe[i, j]
-                nlist.append(k)
+            nlist = []
+            rows, cols = analysisframe.shape
+            for i in range(rows):
+                for j in range(cols):
+                    k = analysisframe[i, j]
+                    nlist.append(k)
 
-        datan = pd.DataFrame(nlist).T
-        colname = []
-        for val in range(784):
-            colname.append(val)
-        datan.columns = colname
+            datan = pd.DataFrame(nlist).T
+            colname = []
+            for val in range(784):
+                colname.append(val)
+            datan.columns = colname
 
-        pixeldata = datan.values
-        pixeldata = pixeldata / 255
-        pixeldata = pixeldata.reshape(-1, 28, 28, 1)
-        prediction = self.model.predict(pixeldata)
-        predarray = np.array(prediction[0])
-        print(predarray)
-        letter_prediction_dict = {self.letterpred[i]: predarray[i] for i in range(len(self.letterpred))}
-        predarrayordered = sorted(predarray, reverse=True)
-        high1 = predarrayordered[0]
-        high2 = predarrayordered[1]
-        high3 = predarrayordered[2]
-        for key, value in letter_prediction_dict.items():
-            if value == high1:
-                print("Predicted Character 1: ", key)
-                print('Confidence 1: ', 100 * value)
-            elif value == high2:
-                print("Predicted Character 2: ", key)
-                print('Confidence 2: ', 100 * value)
-            elif value == high3:
-                print("Predicted Character 3: ", key)
-                print('Confidence 3: ', 100 * value)
-        time.sleep(5)
-
-        framergb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        result = self.hands.process(framergb)
-        hand_landmarks = result.multi_hand_landmarks
-        if hand_landmarks:
-            for handLMs in hand_landmarks:
-                x_max = 0
-                y_max = 0
-                x_min = w
-                y_min = h
-                for lm in handLMs.landmark:
-                    x, y = int(lm.x * w), int(lm.y * h)
-                    if x > x_max:
-                        x_max = x
-                    if x < x_min:
-                        x_min = x
-                    if y > y_max:
-                        y_max = y
-                    if y < y_min:
-                        y_min = y
-                y_min -= 20
-                y_max += 20
-                x_min -= 20
-                x_max += 20
-                cv2.rectangle(img, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
-            cv2.imshow("Frame", img)
+            pixeldata = datan.values
+            pixeldata = pixeldata / 255
+            pixeldata = pixeldata.reshape(-1, 28, 28, 1)
+            prediction = self.model.predict(pixeldata)
+            predarray = np.array(prediction[0])
+            letter_prediction_dict = {self.letterpred[i]: predarray[i] for i in range(len(self.letterpred))}
+            predarrayordered = sorted(predarray, reverse=True)
+            high1 = predarrayordered[0]
+            high2 = predarrayordered[1]
+            high3 = predarrayordered[2]
+            for key, value in letter_prediction_dict.items():
+                if value == high1:
+                    high_key = key
+                    print("Predicted Character 1: ", key)
+                    print('Confidence 1: ', 100 * value)
+                elif value == high2:
+                    print("Predicted Character 2: ", key)
+                    print('Confidence 2: ', 100 * value)
+                elif value == high3:
+                    print("Predicted Character 3: ", key)
+                    print('Confidence 3: ', 100 * value)
+            # time.sleep(5)
+        return high_key
 
 
 SignLanguageController().process(img)
