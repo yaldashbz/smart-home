@@ -36,8 +36,8 @@ while True:
     success, img = cap.read()
 
     # Find Hand
-    img = detector.findHands(img)
-    lmList, bbox = detector.findPosition(img, draw=True)
+    img = detector.find_hands(img)
+    lmList, bbox = detector.find_position(img, draw=True)
     if len(lmList) != 0:
 
         # Filter based on size
@@ -46,7 +46,7 @@ while True:
         if 250 < area < 1000:
 
             # Find Distance between index and Thumb
-            length, img, lineInfo = detector.findDistance(4, 8, img)
+            length, img, lineInfo = detector.find_distance(4, 8, img)
             # print(length)
 
             # Convert Volume
@@ -58,7 +58,7 @@ while True:
             volPer = smoothness * round(volPer / smoothness)
 
             # Check fingers up
-            fingers = detector.fingersUp()
+            fingers = detector.fingers_up()
             # print(fingers)
 
             # If pinky is down set volume
