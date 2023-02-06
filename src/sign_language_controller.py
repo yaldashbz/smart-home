@@ -1,21 +1,11 @@
 import os
-import string
-
-import requests
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import cv2
 import mediapipe as mp
 from keras.models import load_model
 import numpy as np
-import time
 import pandas as pd
-
-url = "http://192.168.212.20:8080/shot.jpg"
-img_resp = requests.get(url)
-img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
-img = cv2.imdecode(img_arr, -1)
-img = cv2.resize(img, (640, 480))
 
 
 class SignLanguageController:
@@ -25,11 +15,12 @@ class SignLanguageController:
         mphands = mp.solutions.hands
         self.hands = mphands.Hands()
         self.mp_drawing = mp.solutions.drawing_utils
-        self.letterpred = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-              'W', 'X', 'Y']
+        self.letterpred = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                           'T', 'U', 'V',
+                           'W', 'X', 'Y']
 
     def process(self, img):
-        high_key = 'A'
+        high_index = 0
         h, w, c = img.shape
         analysisframe = img
         showframe = analysisframe
@@ -87,7 +78,7 @@ class SignLanguageController:
             high3 = predarrayordered[2]
             for key, value in letter_prediction_dict.items():
                 if value == high1:
-                    high_key = key
+                    high_index = self.letterpred.index(key)
                     print("Predicted Character 1: ", key)
                     print('Confidence 1: ', 100 * value)
                 elif value == high2:
@@ -97,7 +88,4 @@ class SignLanguageController:
                     print("Predicted Character 3: ", key)
                     print('Confidence 3: ', 100 * value)
             # time.sleep(5)
-        return high_key
-
-
-SignLanguageController().process(img)
+        return high_index

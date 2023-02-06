@@ -6,31 +6,43 @@ import numpy as np
 import requests
 
 from client import ClientSocket
+from led import turn_on_led, turn_off_led
 
 
 def process(response):
     # finger count
     if state == 1:
-        print(f"response in finger COUNT is {response}")
+        if response in [0, 1]:
+            turn_off_led(1)
+        print("response in finger COUNT is ", response)
+        if response in [4, 5]:
+            turn_on_led(5, 1, 1)
 
     # mnist sign language
     if state == 2:
-        print(f"response in MNIST is {response}")
+        if response in range(10):
+            turn_on_led(2, 1, 2)
+        if response in range(10, 20):
+            turn_on_led(2, 1, 4)
+        if response in range(20, 26):
+            turn_on_led(2, 1, 6)
+        print("response in MNIST is ", response)
 
     # volume
     if state == 3:
-        print(f"VOLUME is {response}")
+        turn_on_led(response // 10, 1, 1)
+        print("VOLUME is ", response)
 
 
 # Replace the below URL with your own. Make sure to add "/shot.jpg" at last.
 
 url = "http://192.168.212.20:8080/shot.jpg"
-TCP_IP = 'localhost'
-TCP_PORT = 8081
+TCP_IP = '192.168.212.104'
+TCP_PORT = 12397
 client = ClientSocket(TCP_IP, TCP_PORT)
 
 reset = True
-state = 0  #  0 1 2 3
+state = 0  # 0 1 2 3
 
 # While loop to continuously fetching data from the Url
 while True:
@@ -41,11 +53,11 @@ while True:
     cv2.imshow("Android_cam", img)
     client.sendImages(img, state)
 
-    print(f"reset is {reset}")
-    print(f"state is {state}")
+    print("reset is ", reset)
+    print("state is ", state)
     response = client.sock.recv(4).decode()
     reset = int(response[-1])
-    print(f'received state in client is {str(state)}')
+    print('received state in client is', str(state))
     if reset:
         state = 0
     else:

@@ -1,4 +1,3 @@
-import time
 from ctypes import cast, POINTER
 
 import cv2
@@ -25,7 +24,6 @@ class VolumeController:
 
     def process(self, img):
         img, _ = self.detector.find_hands(img)
-        cv2.imwrite("in STATE 3.png", img)
         lmList, bbox = self.detector.find_position(img, draw=True)
         if len(lmList) != 0:
 
@@ -48,6 +46,7 @@ class VolumeController:
 
                 # Check fingers up
                 fingers = self.detector.fingers_up()
+                # print(fingers)
 
                 # If pinky is down set volume
                 if not fingers[4]:
@@ -57,25 +56,23 @@ class VolumeController:
                 else:
                     colorVol = (255, 0, 0)
 
-            # Drawings
-            cv2.rectangle(img, (50, 150), (85, 400), (255, 0, 0), 3)
-            cv2.rectangle(img, (50, int(volBar)), (85, 400), (255, 0, 0), cv2.FILLED)
-            cv2.putText(img, f'{int(volPer)} %', (40, 450), cv2.FONT_HERSHEY_COMPLEX,
-                        1, (255, 0, 0), 3)
-            cVol = int(self.volume.GetMasterVolumeLevelScalar() * 100)
-            cv2.putText(img, f'Vol Set: {int(cVol)}', (400, 50), cv2.FONT_HERSHEY_COMPLEX,
-                        1, colorVol, 3)
+        # Drawings
+        # cv2.rectangle(img, (50, 150), (85, 400), (255, 0, 0), 3)
+        # cv2.rectangle(img, (50, int(volBar)), (85, 400), (255, 0, 0), cv2.FILLED)
+        # cv2.putText(img, f'{int(volPer)} %', (40, 450), cv2.FONT_HERSHEY_COMPLEX,
+        #             1, (255, 0, 0), 3)
+        cVol = int(self.volume.GetMasterVolumeLevelScalar() * 100)
+        # cv2.putText(img, f'Vol Set: {int(cVol)}', (400, 50), cv2.FONT_HERSHEY_COMPLEX,
+        #             1, colorVol, 3)
 
-            # Frame rate
-            cTime = time.time()
-            fps = 1 / (cTime - self.pTime)
-            self.pTime = cTime
-            cv2.putText(img, f'FPS: {int(fps)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX,
-                        1, (255, 0, 0), 3)
+        # Frame rate
+        # cTime = time.time()
+        # fps = 1 / (cTime - pTime)
+        # pTime = cTime
+        # cv2.putText(img, f'FPS: {int(fps)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX,
+        #             1, (255, 0, 0), 3)
 
-            cv2.imshow("Img", img)
-            cv2.waitKey(1)
+        cv2.imshow("Img", img)
+        cv2.waitKey(1)
 
-            return cVol
-
-        return 0
+        return cVol

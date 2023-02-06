@@ -63,10 +63,7 @@ class ServerSocket:
                         state = 1
                     state = state if 1 <= state <= 3 else 1
                     print("CONTROLLER state in server is ", state)
-                    if state == 1:
-                        res = CONTROLLERS[state - 1].process(decimg)
-                    else:
-                        res = state
+                    res = CONTROLLERS[state - 1].process(decimg)
                     print("Res in server ", res)
                     self.conn.send(str(res).encode())
                 # reset
@@ -91,9 +88,9 @@ class ServerSocket:
 
 
 def main():
-    IP = '192.168.181.104'
+    IP = '192.168.212.104'
     # 12397
-    ServerSocket('localhost', 8081)
+    ServerSocket(IP, 12397)
 
 
 if __name__ == "__main__":
