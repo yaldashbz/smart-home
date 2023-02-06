@@ -1,6 +1,8 @@
 import os
 import string
 
+import requests
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import cv2
 import mediapipe as mp
@@ -8,12 +10,17 @@ from keras.models import load_model
 import numpy as np
 import time
 import pandas as pd
-from src.connection.base import BaseController
+
+url = "http://192.168.212.20:8080/shot.jpg"
+img_resp = requests.get(url)
+img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
+img = cv2.imdecode(img_arr, -1)
+img = cv2.resize(img, (640, 480))
 
 
-class SignLanguageController(BaseController):
+class SignLanguageController:
     def __init__(self):
-        self.model = load_model('../../models/sign_language_cnn.h5')
+        self.model = load_model('../models/sign_language_cnn.h5')
 
         mphands = mp.solutions.hands
         self.hands = mphands.Hands()
@@ -71,6 +78,7 @@ class SignLanguageController(BaseController):
         pixeldata = pixeldata.reshape(-1, 28, 28, 1)
         prediction = self.model.predict(pixeldata)
         predarray = np.array(prediction[0])
+        print(predarray)
         letter_prediction_dict = {self.letterpred[i]: predarray[i] for i in range(len(self.letterpred))}
         predarrayordered = sorted(predarray, reverse=True)
         high1 = predarrayordered[0]
@@ -113,3 +121,6 @@ class SignLanguageController(BaseController):
                 x_max += 20
                 cv2.rectangle(img, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
             cv2.imshow("Frame", img)
+
+
+SignLanguageController().process(img)

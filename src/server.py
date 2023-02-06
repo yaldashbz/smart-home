@@ -1,20 +1,29 @@
 import base64
 import socket
 import threading
-import time
 from datetime import datetime
-
 import cv2
 import numpy
 
 from finger_count_controller import FingerCountController
+from sign_language_controller import SignLanguageController
+from utils import find_landmark
+from volume_controller import VolumeController
 
-controller = FingerCountController()
+count_controller = FingerCountController()
+sign_controller = SignLanguageController()
+volume_controller = VolumeController()
+
+CONTROLLERS = [
+    count_controller,
+    sign_controller,
+    volume_controller
+]
 
 
 class ServerSocket:
     def __init__(self, ip, port):
-        self.TCP_IP = socket.gethostname()
+        self.TCP_IP = ip
         self.TCP_PORT = port
         self.socketOpen()
         self.receiveThread = threading.Thread(target=self.receiveImages)
@@ -40,18 +49,29 @@ class ServerSocket:
                 length1 = length.decode('utf-8')
                 stringData = self.recvall(self.conn, int(length1))
                 stime = self.recvall(self.conn, 64)
-                print('send time: ' + stime.decode('utf-8'))
-                now = time.localtime()
-                print('receive time: ' + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f'))
+                state = int(self.recvall(self.conn, 64))
+                # print('send time: ' + stime.decode('utf-8'))
+                # print('receive time: ' + datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f'))
                 data = numpy.frombuffer(base64.b64decode(stringData), numpy.uint8)
                 decimg = cv2.imdecode(data, 1)
-                res = controller.process(decimg)
-                print("reeeeeeeeeeeeeeeeeeees is ", res)
-                # res_data = base64.b64encode(str(res).encode())
-                self.conn.send(str(res).encode())
-                # self.sock.send(res_data)
-                # cv2.imshow("image", decimg)
-                cv2.waitKey(1)
+                reset = len(find_landmark(decimg)) == 0
+                if reset:
+                    print("RESET, Hand NOt detected!")
+                    self.conn.send(str(0).encode())
+                else:
+                    if state == 0:
+                        state = 1
+                    state = state if 1 <= state <= 3 else 1
+                    print("CONTROLLER state in server is ", state)
+                    if state == 1:
+                        res = CONTROLLERS[state - 1].process(decimg)
+                    else:
+                        res = state
+                    print("Res in server ", res)
+                    self.conn.send(str(res).encode())
+                # reset
+                self.conn.send(str(int(reset)).encode())
+                print('-' * 30)
         except Exception as e:
             print(e)
             self.socketClose()
@@ -72,7 +92,8 @@ class ServerSocket:
 
 def main():
     IP = '192.168.181.104'
-    server = ServerSocket('', 12397)
+    # 12397
+    ServerSocket('localhost', 8081)
 
 
 if __name__ == "__main__":

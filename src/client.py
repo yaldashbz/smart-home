@@ -10,7 +10,7 @@ import numpy
 
 class ClientSocket:
     def __init__(self, ip, port):
-        self.TCP_SERVER_IP = socket.gethostname()
+        self.TCP_SERVER_IP = ip
         self.TCP_SERVER_PORT = port
         self.connectCount = 0
         self.connectServer()
@@ -33,19 +33,11 @@ class ClientSocket:
             print(u'%d times try to connect with server' % (self.connectCount))
             self.connectServer()
 
-    def sendImages(self, frame):
+    def sendImages(self, frame, state=1):
         cnt = 0
-        # capture = cv2.VideoCapture(0)
-        # capture.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-        # capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 315)
         try:
-            # while capture.isOpened():
-            #     ret, frame = capture.read()
             resize_frame = cv2.resize(frame, dsize=(480, 315), interpolation=cv2.INTER_AREA)
-
-            now = time.localtime()
             stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
-
             encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
             result, imgencode = cv2.imencode('.jpg', resize_frame, encode_param)
             data = numpy.array(imgencode)
@@ -54,9 +46,9 @@ class ClientSocket:
             self.sock.sendall(length.encode('utf-8').ljust(64))
             self.sock.send(stringData)
             self.sock.send(stime.encode('utf-8').ljust(64))
-            print(u'send images %d' % (cnt))
+            self.sock.send(str(state).encode('utf-8').ljust(64))
+            # print(u'send images %d' % (cnt))
             cnt += 1
-            # time.sleep(0.095)
             time.sleep(1)
         except Exception as e:
             print(e)

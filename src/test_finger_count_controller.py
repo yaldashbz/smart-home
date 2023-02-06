@@ -1,6 +1,6 @@
 import cv2
 
-from src.connection.finger_count_controller import FingerCountController
+from finger_count_controller import FingerCountController
 
 cap = cv2.VideoCapture(0)
 tip = [8, 12, 16, 20]

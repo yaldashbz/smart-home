@@ -1,16 +1,13 @@
 import os
 
-from src.controller.sign_language_controller import SignLanguageController
+from sign_language_controller import SignLanguageController
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import cv2
 import mediapipe as mp
 from keras.models import load_model
-import numpy as np
-import time
-import pandas as pd
 
-model = load_model('../../models/sign_language_cnn.h5')
+model = load_model('../models/sign_language_cnn.h5')
 
 mphands = mp.solutions.hands
 hands = mphands.Hands()

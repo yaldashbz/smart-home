@@ -1,10 +1,4 @@
 import cv2
-import time
-import numpy as np
-import hand_tracker as htm
-from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 ################################
 from volume_controller import VolumeController
