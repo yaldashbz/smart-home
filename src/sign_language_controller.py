@@ -60,44 +60,44 @@ while True:
                 x_min -= 20
                 x_max += 20
 
-        analysisframe = cv2.cvtColor(analysisframe, cv2.COLOR_BGR2GRAY)
-        analysisframe = analysisframe[y_min:y_max, x_min:x_max]
-        analysisframe = cv2.resize(analysisframe, (28, 28))
+            analysisframe = cv2.cvtColor(analysisframe, cv2.COLOR_BGR2GRAY)
+            analysisframe = analysisframe[y_min:y_max, x_min:x_max]
+            analysisframe = cv2.resize(analysisframe, (28, 28))
 
-        nlist = []
-        rows, cols = analysisframe.shape
-        for i in range(rows):
-            for j in range(cols):
-                k = analysisframe[i, j]
-                nlist.append(k)
+            nlist = []
+            rows, cols = analysisframe.shape
+            for i in range(rows):
+                for j in range(cols):
+                    k = analysisframe[i, j]
+                    nlist.append(k)
 
-        datan = pd.DataFrame(nlist).T
-        colname = []
-        for val in range(784):
-            colname.append(val)
-        datan.columns = colname
+            datan = pd.DataFrame(nlist).T
+            colname = []
+            for val in range(784):
+                colname.append(val)
+            datan.columns = colname
 
-        pixeldata = datan.values
-        pixeldata = pixeldata / 255
-        pixeldata = pixeldata.reshape(-1, 28, 28, 1)
-        prediction = model.predict(pixeldata)
-        predarray = np.array(prediction[0])
-        letter_prediction_dict = {letterpred[i]: predarray[i] for i in range(len(letterpred))}
-        predarrayordered = sorted(predarray, reverse=True)
-        high1 = predarrayordered[0]
-        high2 = predarrayordered[1]
-        high3 = predarrayordered[2]
-        for key, value in letter_prediction_dict.items():
-            if value == high1:
-                print("Predicted Character 1: ", key)
-                print('Confidence 1: ', 100 * value)
-            elif value == high2:
-                print("Predicted Character 2: ", key)
-                print('Confidence 2: ', 100 * value)
-            elif value == high3:
-                print("Predicted Character 3: ", key)
-                print('Confidence 3: ', 100 * value)
-        time.sleep(5)
+            pixeldata = datan.values
+            pixeldata = pixeldata / 255
+            pixeldata = pixeldata.reshape(-1, 28, 28, 1)
+            prediction = model.predict(pixeldata)
+            predarray = np.array(prediction[0])
+            letter_prediction_dict = {letterpred[i]: predarray[i] for i in range(len(letterpred))}
+            predarrayordered = sorted(predarray, reverse=True)
+            high1 = predarrayordered[0]
+            high2 = predarrayordered[1]
+            high3 = predarrayordered[2]
+            for key, value in letter_prediction_dict.items():
+                if value == high1:
+                    print("Predicted Character 1: ", key)
+                    print('Confidence 1: ', 100 * value)
+                elif value == high2:
+                    print("Predicted Character 2: ", key)
+                    print('Confidence 2: ', 100 * value)
+                elif value == high3:
+                    print("Predicted Character 3: ", key)
+                    print('Confidence 3: ', 100 * value)
+            time.sleep(5)
 
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(framergb)
