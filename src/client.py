@@ -27,7 +27,6 @@ class ClientSocket:
                 u'Client socket is connected with Server socket [ TCP_SERVER_IP: ' + self.TCP_SERVER_IP + ', TCP_SERVER_PORT: ' + str(
                     self.TCP_SERVER_PORT) + ' ]')
             self.connectCount = 0
-            # self.sendImages()
         except Exception as e:
             print(e)
             self.connectCount += 1
