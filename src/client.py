@@ -9,6 +9,10 @@ import numpy
 
 
 class ClientSocket:
+    """
+    Client Socket class for handling connection to server and sending images to it.
+    """
+
     def __init__(self, ip, port):
         self.TCP_SERVER_IP = ip
         self.TCP_SERVER_PORT = port
@@ -70,7 +74,7 @@ class ClientSocket:
 def main():
     TCP_IP = 'localhost'
     TCP_PORT = 8081
-    client = ClientSocket(TCP_IP, TCP_PORT)
+    ClientSocket(TCP_IP, TCP_PORT)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import base64
 import socket
 import threading
-from datetime import datetime
+
 import cv2
 import numpy
 
@@ -22,6 +22,9 @@ CONTROLLERS = [
 
 
 class ServerSocket:
+    """
+    Server Socket class for handling processing recived image from client, base on state
+    """
     def __init__(self, ip, port):
         self.TCP_IP = ip
         self.TCP_PORT = port
@@ -56,7 +59,7 @@ class ServerSocket:
                 decimg = cv2.imdecode(data, 1)
                 reset = len(find_landmark(decimg)) == 0
                 if reset:
-                    print("RESET, Hand NOt detected!")
+                    print("RESET, Hand Not detected!")
                     self.conn.send(str(0).encode())
                 else:
                     if state == 0:
@@ -88,9 +91,9 @@ class ServerSocket:
 
 
 def main():
-    IP = '192.168.212.104'
-    # 12397
-    ServerSocket(IP, 12397)
+    TCP_IP = '192.168.212.104'
+    TCP_PORT = 12397
+    ServerSocket(TCP_IP, TCP_PORT)
 
 
 if __name__ == "__main__":

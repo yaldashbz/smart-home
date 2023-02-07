@@ -6,6 +6,9 @@ from utils import find_position, find_landmark
 
 
 class FingerCountController:
+    """
+    Count up fingers
+    """
     def __init__(self):
         self.tip = [8, 12, 16, 20]
         self.tipname = [8, 12, 16, 20]
@@ -34,20 +37,8 @@ class FingerCountController:
         x = fingers + finger
         c = Counter(x)
         up = c[1]
-        down = c[0]
 
         cv2.imshow("Frame", frame1)
         key = cv2.waitKey(1) & 0xFF
-
-        # 5 fingers Up open the door
-        # 1 close the door
-
-        # if up == 5 or up == 4:
-        #     print("Open the door")
-            # return 1
-
-        # if up == 1 or up == 0:
-            # print("close the door")
-            # return 0
 
         return up

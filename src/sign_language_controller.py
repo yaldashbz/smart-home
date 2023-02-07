@@ -9,6 +9,7 @@ import pandas as pd
 
 
 class SignLanguageController:
+    """Uses deep pre-trained model for detecting sign languages"""
     def __init__(self):
         self.model = load_model('../models/sign_language_cnn.h5')
 
@@ -87,5 +88,4 @@ class SignLanguageController:
                 elif value == high3:
                     print("Predicted Character 3: ", key)
                     print('Confidence 3: ', 100 * value)
-            # time.sleep(5)
         return high_index

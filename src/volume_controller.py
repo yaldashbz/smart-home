@@ -11,6 +11,9 @@ wCam, hCam = 640, 480
 
 
 class VolumeController:
+    """
+    Determine volume base on distance of two fingers in one hand
+    """
     def __init__(self):
         self.detector = htm.HandTracker(detection_con=0.7, max_hands=1)
 
@@ -23,6 +26,7 @@ class VolumeController:
         self.pTime = 0
 
     def process(self, img):
+        img = cv2.resize(img, (wCam, hCam))
         img, _ = self.detector.find_hands(img)
         lmList, bbox = self.detector.find_position(img, draw=True)
         if len(lmList) != 0:
@@ -72,7 +76,7 @@ class VolumeController:
         # cv2.putText(img, f'FPS: {int(fps)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX,
         #             1, (255, 0, 0), 3)
 
-        cv2.imshow("Img", img)
+        cv2.imshow("Volume Image", img)
         cv2.waitKey(1)
 
         return cVol

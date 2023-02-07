@@ -8,6 +8,9 @@ import requests
 from client import ClientSocket
 from led import turn_on_led, turn_off_led
 
+"""
+Controller script to run on raspberry pi
+"""
 
 def process(response):
     # finger count
@@ -36,7 +39,7 @@ def process(response):
 
 # Replace the below URL with your own. Make sure to add "/shot.jpg" at last.
 
-url = "http://192.168.212.20:8080/shot.jpg"
+url = "http://192.168.1.100:8080/shot.jpg"
 TCP_IP = '192.168.212.104'
 TCP_PORT = 12397
 client = ClientSocket(TCP_IP, TCP_PORT)
@@ -71,6 +74,6 @@ while True:
     # Press Esc key to exit
     if cv2.waitKey(1) == 27:
         break
-    sleep(10)
+    sleep(1)
 
 cv2.destroyAllWindows()

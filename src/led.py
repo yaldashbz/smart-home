@@ -11,18 +11,12 @@ GPIO.setup(PORT, GPIO.OUT)
 def turn_on_led(on_duration, off_duration=1, count=1):
     i = 0
     while i < count:
-        # set GPIO14 pin to HIGH
         GPIO.output(PORT, GPIO.HIGH)
-        # show message to Terminal
         print("LED is ON")
-        # pause for one second
         time.sleep(on_duration)
 
-        # set GPIO14 pin to HIGH
         GPIO.output(PORT, GPIO.LOW)
-        # show message to Terminal
         print("LED is OFF")
-        # pause for one second
         time.sleep(off_duration)
         i += 1
 
