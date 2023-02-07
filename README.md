@@ -8,6 +8,6 @@ Simple real-time system for detecting hand sign and hand gesture for device cont
 ### Contributors
 | Members |
 | :---:   |
-| `` |
-| ``  |
-| ``  |
+| `Yalda Shabanzadeh` |
+| `Bardia Mohammadi`  |
+| `Bahar Asadi`  |

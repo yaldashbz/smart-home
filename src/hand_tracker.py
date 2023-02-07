@@ -26,12 +26,12 @@ class HandTracker:
     def find_hands(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
-
+        is_detected = self.results.multi_hand_landmarks is not None
         if self.results.multi_hand_landmarks:
             for mark in self.results.multi_hand_landmarks:
                 if draw:
                     self.mp_draw.draw_landmarks(img, mark, self.mp_hands.HAND_CONNECTIONS)
-        return img
+        return img, is_detected
 
     def find_position(self, img, handNo=0, draw=True):
         x_list, y_list, bbox = list(), list(), list()

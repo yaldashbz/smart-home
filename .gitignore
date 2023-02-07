@@ -3,6 +3,7 @@ venv
 *.npz
 *.pyc
 *.json
+__pycache__
 
 models/*
 

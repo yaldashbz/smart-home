@@ -4,66 +4,41 @@ import cv2
 
 from utils import find_position, find_landmark
 
-cap = cv2.VideoCapture(0)
-tip = [8, 12, 16, 20]
-tipname = [8, 12, 16, 20]
-fingers = []
-finger = []
 
-while True:
+class FingerCountController:
+    """
+    Count up fingers
+    """
+    def __init__(self):
+        self.tip = [8, 12, 16, 20]
+        self.tipname = [8, 12, 16, 20]
 
-    ret, frame = cap.read()
-    # flipped = cv2.flip(frame, flipCode = -1)
-    frame1 = cv2.resize(frame, (640, 480))
+    def process(self, img):
+        finger, fingers = list(), list()
+        frame1 = cv2.resize(img, (640, 480))
+        frame1 = frame1.copy()
 
-    a = find_position(frame1)
-    b = find_landmark(frame1)
-
-    if len(b and a) != 0:
-        finger = []
-        if a[0][1:] < a[4][1:]:
-            finger.append(1)
-            print(b[4])
-
-        else:
-            finger.append(0)
-
-        fingers = []
-        for idx in range(0, 4):
-            if a[tip[idx]][2:] < a[tip[idx] - 2][2:]:
-
-                print(b[tipname[idx]])
-
-                # if a[tip[2]] < a[tip[2] - 2]:
-                #     kit.servo[0].angle = 50
-
-                fingers.append(1)
-
+        a = find_position(frame1)
+        b = find_landmark(frame1)
+        if len(b and a) != 0:
+            finger = []
+            if a[0][1:] < a[4][1:]:
+                finger.append(1)
             else:
-                fingers.append(0)
+                finger.append(0)
 
-    x = fingers + finger
-    c = Counter(x)
-    up = c[1]
-    down = c[0]
-    print(up)
-    print(down)
+            fingers = []
+            for idx in range(0, 4):
+                if a[self.tip[idx]][2:] < a[self.tip[idx] - 2][2:]:
+                    fingers.append(1)
+                else:
+                    fingers.append(0)
 
-    cv2.imshow("Frame", frame1)
-    key = cv2.waitKey(1) & 0xFF
+        x = fingers + finger
+        c = Counter(x)
+        up = c[1]
 
-    # My Additions
-    # 5 fingers Up open the door
-    # 0 or `1 close the door
+        cv2.imshow("Frame", frame1)
+        key = cv2.waitKey(1) & 0xFF
 
-    if up == 5:
-        print("Open the door")
-
-    if up == 1:
-        print("close the door")
-
-    if key == ord("q"):
-        print("you have" + str(up) + "fingers up  and" + str(down) + "fingers down")
-
-    if key == ord("s"):
-        break
+        return up
