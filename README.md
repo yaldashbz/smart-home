@@ -1,7 +1,7 @@
 # Smart Home
 ## Embeded System Course Project 
 
-### Sharif University of Technology
+### Sharif University of Technologyy
 Simple real-time system for detecting hand sign and hand gesture for device controls
 
 
